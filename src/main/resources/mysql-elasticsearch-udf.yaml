@@ -7,6 +7,8 @@ checkpoint:
 savepoint:
   enabled: true
 pipeline:
+  - | 
+    CREATE TEMPORARY FUNCTION mask_phone AS 'tk.fishfish.cdc.udf.MaskPhoneNumber'
   - |
     CREATE TABLE t_user (
       id INT,
@@ -41,4 +43,4 @@ pipeline:
        'password' = 'root',
        'index' = 'user_cdc'
     )
-  - INSERT INTO t_user_copy SELECT id, name, username, email, password, created_at FROM t_user
+  - INSERT INTO t_user_copy SELECT id, name, username, email, mask_phone(password), created_at FROM t_user
